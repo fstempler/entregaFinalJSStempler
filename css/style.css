@@ -1,19 +1,99 @@
 body{
-    background: rgb(29,6,50);
-    background: linear-gradient(170deg, rgba(29,6,50,1) 0%, rgba(95,1,208,1) 35%, rgba(90,104,239,1) 100%);
+    background-color: #252422;
+    height: 100vh;
+}
+
+.main__Section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
     height: 100vh;
 }
 .home__Title{
-    font-family: "Nunito", sans-serif;       
-    color: #F351C0;
-    font-size: 3rem;
+    font-family: "Outfit", sans-serif;       
+    color: #FFFCF2;
+    font-size: 1.5rem;
+    margin: 0;
 }
-.home__Subtitle{
-    font-family: "Nunito", sans-serif;       
-    color: #FFF;
-    margin-top: 50px;
+
+.login__Section{
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-.home__Text{
-    font-family: "Nunito", sans-serif;       
-    color: #FFF;
+.input__Title{
+    font-family: "Outfit", sans-serif;       
+    font-size: 1rem;
+    color: #FFFCF2;
+    margin-top: 20px;
 }
+.login__Input{
+    background-color: #25242200;
+    border-style: solid;
+    border-radius: 100px;
+    border-width: 1px;
+    padding: 5px 10px;
+}
+.login__Btn{
+    width: 100px;
+    font-family: "Outfit", sans-serif;       
+    color: #FFFCF2;
+    font-size: 1rem;
+    margin: 30px;
+    background-color: #25242200;
+    border-style: solid;
+    border-radius: 100px;
+    border-width: 1px;
+    border-color: #FFFCF2;
+    padding: 5px 10px;
+}
+
+/* Select Style */
+
+.select__Logo{
+    width: 20%;
+}
+.select__Tagline{
+    font-family: "Outfit", sans-serif;           
+    font-size: 0.9rem;
+    color: #FFFCF2;
+    margin-top: 20px;
+}
+.selection__Container{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.select__Button{
+    width: 150px;
+    height: 150px;    
+    background-color: #CCC5B9;    
+    border-style: none;
+    border-radius: 25px 0 25px 0;    
+}
+.select__Button:active{
+    background-color: #EB5E28;
+    border-style: none;
+    border-radius: 0;   
+    transition: 1s; 
+}
+.select__ButtonIcon{
+    font-size: 2rem;
+}
+
+@media (max-width: 576px) { 
+    .main__Logo{
+        width: 300px;
+        height: auto;
+    }
+    /* Select Style */
+    .selection__Container{        
+        flex-direction: column;        
+    }
+    
+ }
