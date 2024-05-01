@@ -3,6 +3,12 @@ body{
     height: 100vh;
 }
 
+.noDisplay{
+    display: none !important;
+}
+.display{    
+    display: flex !important;
+}
 .main__Section{
     display: flex;
     justify-content: center;
