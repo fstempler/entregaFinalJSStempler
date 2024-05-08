@@ -1,36 +1,61 @@
-//Homepage Handle
+//Data
+let users = [
+    {"id": 1, 
+    "name": "Max", 
+    "lastname": "Power",
+    "user": "admin",
+    "password": "admin1234",
+    "email": "maxpower@test.com",    
+    "tel": 1122334455
+},
+    {"id": 2, 
+    "name": "Ray", 
+    "lastname": "Cooper",
+    "user": "admin2",
+    "password": "admin5678",
+    "email": "maxpower@test.com",    
+    "tel": 1122334455
+}
+];
 
-//Select Handle
+//Inputs
+let userName = document.getElementById('userName');
+let userPassword = document.getElementById('userPassword');
+//Botones
+let loginBtn = document.getElementById('loginBtn');
 
-//Sections
-let mainContainer = document.getElementById('main__Container');
-let selectionContainer = document.getElementById('selection__Container');
+function logIn() {
+    event.preventDefault(); 
 
-//Botones 
-let sale = document.getElementById("saleBtn");
-let clients = document.getElementById("clientsBtn" );
-let products = document.getElementById('productsBtn');
-let reports = document.getElementById('reportsBtn');
-
-
-function handleSelectionBtns(){
-    console.log('Hiciste click en ${this.id}');
-    selectionContainer.classList.add("noDisplay");   
-    mainContainer.innerHTML=`<button class="select__Button" id="goBackBtn">
-                                <i class="bi bi-backspace-fill select__ButtonIcon"></i>                                
-                                <br>
-                                Go Back
-                            </button>`;  
-
-    let goBack = document.getElementById('goBackBtn');
-
-    goBack.onclick = () => {        
-        console.log('Hiciste click en Go Back');
-        location.reload();      
+    let username = userName.value;
+    let userpassword = userPassword.value;        
+    
+    for (const user of users) {
+        if (user.user === username && user.password === userpassword) {
+            location.href = "./Pages/select.html";      
+            alert(`Hello ${username}!`);
+            localStorage.setItem("username", username); 
+            localStorage.setItem("userpassword", userpassword); 
+            return;
         }
+    }    
+    
+    alert("User or password not valid");
+    location.href = "./index.html";
 }
 
-sale.onclick = handleSelectionBtns;
-clients.onclick = handleSelectionBtns;
-products.onclick = handleSelectionBtns;
-reports.onclick = handleSelectionBtns;
+loginBtn.onclick = logIn;
+
+// function checkLocalStorageAndRedirect() {
+    
+//     if (localStorage.getItem("username") && localStorage.getItem("userpassword")) {
+//         location.href = "./Pages/select.html";      
+//     } else {
+//         location.href = "./index.html";
+//     }
+// }
+
+
+// window.onload = function() {
+//     checkLocalStorageAndRedirect();
+// };

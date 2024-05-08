@@ -1,8 +1,9 @@
 body{
     background-color: #252422;
     height: 100vh;
+    font-family: "Outfit", sans-serif;           
 }
-
+/* HomePage style */
 .noDisplay{
     display: none !important;
 }
@@ -43,6 +44,7 @@ body{
     border-radius: 100px;
     border-width: 1px;
     padding: 5px 10px;
+    color: #FFFCF2;
 }
 .login__Btn{
     width: 100px;
@@ -55,7 +57,11 @@ body{
     border-radius: 100px;
     border-width: 1px;
     border-color: #FFFCF2;
-    padding: 5px 10px;
+    padding: 5px 10px;    
+}
+.login__Btn a{
+    text-decoration: none;
+    color: #FFFCF2;
 }
 
 /* Select Style */
@@ -82,6 +88,12 @@ body{
     border-style: none;
     border-radius: 25px 0 25px 0;    
 }
+.select__Button:hover{
+    background-color: #EB5E28;
+    border-style: none;
+    border-radius: 5px;   
+    transition: 1s; 
+}
 .select__Button:active{
     background-color: #EB5E28;
     border-style: none;
@@ -90,6 +102,92 @@ body{
 }
 .select__ButtonIcon{
     font-size: 2rem;
+}
+
+.goBack__Button{
+    width: 150px;
+    height: 50px;
+    border-radius: 25px 0 25px 0;    
+    align-items: center;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 10px;
+    margin: 20px;
+}
+.comingSoon__Title{
+    color: #FFFCF2;
+    font-size: 2rem;
+    margin: 20px;
+}
+.button__Style{
+    background-color: #252422;
+    border-style: none;
+}
+/* Sale style */
+.selectClientTitle{
+    color: #FFFCF2;
+    margin: 15px;
+}
+.select__Client{
+    margin: 15px;
+    width: 150px;
+    border-radius: 14px;
+    background-color: #252422;
+    color: #FFFCF2;
+}
+.products__Container{
+    display: flex;
+    gap: 20px;    
+    align-items: center;
+}
+.qty__Input{
+    width: 70px;
+}
+.addBtn{
+    background-color: #252422;
+    border-style: none;
+}
+.addIcon{
+    color: #EB5E28;
+    font-size: 1.5rem;
+}
+.subtotal{
+    margin: 0;
+}
+.orderTotal{
+    color: #FFFCF2;
+}
+.confirmBtn{
+    margin: 15px;
+    border-radius: 25px 0 25px 0;
+    padding: 10px;
+}
+.total__Section{
+    color: #FFFCF2;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 20px;
+    border-color: #EB5E28;
+}
+/* Clients style */
+.client__List{
+    color: #FFFCF2;
+    margin: 20px;
+    list-style: none;
+}
+/* Product style */
+.product__List{
+    color: #FFFCF2;
+    margin: 20px;
+    list-style: none;
+}
+
+/* Orders style */
+.orders__Container{
+    background-color: #CCC5B9;
+    border-radius: 15px;
+    padding: 20px;
 }
 
 @media (max-width: 576px) { 
