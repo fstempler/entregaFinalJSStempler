@@ -1,68 +1,6 @@
+//data
 
-//Data
-
-const clientsList = [
-    {"id": 1, 
-    "name": "Client A", 
-    "email": "clientA@example.com",
-    "address": "Calle Falsa 1234",
-    "tel": 1122334455
-},
-    {"id": 2, 
-    "name": "Client B", 
-    "email": "clientB@example.com",
-    "address": "Calle Falsa2 1234",
-    "tel": 1122334455
-},
-    {"id": 3, 
-    "name": "Client C", 
-    "email": "clientC@example.com",
-    "address": "Calle Falsa 1234",
-    "tel": 1122334455
-},
-    {"id": 4, 
-    "name": "Client D", 
-    "email": "clientD@example.com",
-    "address": "Calle Falsa2 1234",
-    "tel": 1122334455
-}
-]
-
-const productsList = [
-    {
-        "id": 1,
-        "name": "Torta Entera",
-        "price": 3000,
-        "stock": 50
-    },
-    {
-        "id": 2,
-        "name": "Porción de torta",
-        "price": 2000,
-        "stock": 80
-    },
-    {
-        "id": 3,
-        "name": "Sandwich de miga",
-        "price": 3200,
-        "stock": 75
-    },
-    {
-        "id": 4,
-        "name": "Bombones x 12",
-        "price": 1300,
-        "stock": 30
-    },
-    {
-        "id": 5,
-        "name": "Tiramisu",
-        "price": 3000,
-        "stock": 50
-    }
-]
-
-let orders = []
-
+orders = [];
 
 //Sections
 let mainContainer = document.getElementById('main__Container');
@@ -104,111 +42,151 @@ function handleComingSoon(){
 
 function createOrder() {
     let thisOrder = [];
-    
-    selectionContainer.classList.add("noDisplay");
+
+    // Fetch and process clientsList
+    fetch('../data/clientsList.json')
+        .then(response => response.json())
+        .then(clientsList => {
+            console.log(clientsList); // Verificar carga de clientes
+
+            selectionContainer.classList.add("noDisplay");
+            mainContainer.appendChild(goBackBtn);
+            let goBack = document.getElementById('goBackBtn');
+            goBack.onclick = () => {        
+                console.log('Hiciste click en Go Back');
+                location.reload();      
+            }
+
+            let selectClientTitle = document.createElement('h2');
+            selectClientTitle.classList.add("selectClientTitle");
+            selectClientTitle.textContent = 'Select a client:'; 
+            mainContainer.appendChild(selectClientTitle);
+
+            let select = document.createElement("select");
+            select.classList.add("select__Client");
+
+            clientsList.forEach(client => {
+                let option = document.createElement('option');
+                option.value = client.name;
+                option.textContent = client.name;
+                select.appendChild(option);
+            });
+            mainContainer.appendChild(select);
+        })
+        .catch(error => {
+            console.error('Error al cargar la lista de clientes:', error);
+        });
+
+    // Fetch and process productsList
+    fetch('../data/productsList.json')
+        .then(response => response.json())
+        .then(productsList => {
+            console.log(productsList); // Verificar carga de productos
+
+            let totalAmountElement = document.createElement("p");
+            totalAmountElement.id = "totalAmount";
+            totalAmountElement.classList = "orderTotal";
+            totalAmountElement.textContent = "$0.00";
+            mainContainer.appendChild(totalAmountElement);
+
+            productsList.forEach(product => {
+                let li = document.createElement("li");
+                li.classList.add("product__List");
+                li.innerHTML = `
+                    <div class="products__Container">
+                        <strong>Name:</strong> ${product.name}<br>
+                        <strong>Price:</strong> $${product.price}.00<br>            
+                        <input placeholder="Qty" class="qty__Input">
+                        <button class="addBtn"><i class="bi bi-plus-circle-fill addIcon"></i></button>            
+                        <br>
+                        <p class="subtotal"></p>
+                    </div>
+                `;
+
+                mainContainer.appendChild(li);
+
+                let addBtn = li.querySelector(".addBtn");
+                let qtyInput = li.querySelector(".qty__Input");
+                let subtotal = li.querySelector(".subtotal");
+
+                addBtn.addEventListener("click", () => {
+                    let qty = parseInt(qtyInput.value);
+                    if (!isNaN(qty) && qty > 0) {
+                        let calcSubtotal = qty * product.price;
+                        subtotal.textContent = `$${calcSubtotal}.00`;
+                        thisOrder.push({ 'productId': product.id, 'name': product.name, 'quantity': qty, 'price': product.price, 'subtotal': calcSubtotal });
+
+                        // Recalculate the total and update the UI
+                        let total = thisOrder.reduce((acc, order) => acc + order.subtotal, 0);
+                        totalAmountElement.textContent = `$${total}.00`;
+
+                        console.log(thisOrder);
+                        console.log(total);
+                    } else {
+                        alert("Invalid quantity");
+                    }
+                });
+            });
+
+            let totalSection = document.createElement("div");
+            totalSection.classList.add("total__Section");
+            totalSection.innerHTML = `
+                <button id="confirmOrderBtn" class="confirmBtn">Confirm Order</button>    
+                <h3>Total:</h3>
+            `;
+            totalSection.appendChild(totalAmountElement);
+            mainContainer.appendChild(totalSection);
+
+            let confirmOrderBtn = document.getElementById('confirmOrderBtn');
+            confirmOrderBtn.addEventListener("click", () => {
+            
+                let total = thisOrder.reduce((acc, order) => acc + order.subtotal, 0);
+            
+            
+                let ordersFromStorage = localStorage.getItem("orders");
+                
+            
+            
+                if (ordersFromStorage) {
+                    orders = JSON.parse(ordersFromStorage);
+                }
+            
+            
+                orders.push({
+                    client: document.querySelector('.select__Client').value,
+                    products: thisOrder.map(order => ({ productId: order.productId, name: order.name, quantity: order.quantity, price: order.price })),
+                    total: total
+                });
+            
+                localStorage.setItem("orders", JSON.stringify(orders));
+            
+                // Limpiar thisOrder y actualizar el totalAmountElement
+                thisOrder = [];
+                totalAmountElement.textContent = "$0.00";
+            
+                console.log(orders);
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar la lista de productos:', error);
+        });
+}
+
+
+
+
+//Función para mostrar el listado de clientes
+function showClients(){
+    fetch('../data/clientsList.json')
+        .then(response => response.json())
+        .then(clientsList => {
+            selectionContainer.classList.add("noDisplay");
     mainContainer.appendChild(goBackBtn);
     let goBack = document.getElementById('goBackBtn');
     goBack.onclick = () => {        
         console.log('Hiciste click en Go Back');
         location.reload();      
         }
-    let selectClientTitle = document.createElement('h2');
-    selectClientTitle.classList.add("selectClientTitle");
-    selectClientTitle.textContent='Select a client:'; 
-    mainContainer.appendChild(selectClientTitle)
-
-    let select = document.createElement("select");
-    select.classList.add("select__Client");    
-
-    clientsList.forEach(client => {
-        let option = document.createElement('option');
-        option.value = client.name;
-        option.textContent = client.name;
-        select.appendChild(option);
-    });   
-    mainContainer.appendChild(select);   
-
-    let totalAmountElement = document.createElement("p");
-    totalAmountElement.id = "totalAmount";
-    totalAmountElement.classList= "orderTotal";
-    totalAmountElement.textContent = "$0.00";
-
-    mainContainer.appendChild(totalAmountElement);
-
-    for (const product of productsList) {        
-        let li = document.createElement("li");
-        li.classList.add("product__List");
-        li.innerHTML = `
-            <div class="products__Container">
-                <strong>Name:</strong> ${product.name}<br>
-                <strong>Price:</strong> $${product.price}.00<br>            
-                <input placeholder="Qty" class="qty__Input">
-                <button class="addBtn"><i class="bi bi-plus-circle-fill addIcon"></i></button>            
-                <br>
-                <p class="subtotal"></p>
-            </div>
-        `;
-
-        mainContainer.appendChild(li);
-
-        let addBtn = li.querySelector(".addBtn");
-        let qtyInput = li.querySelector(".qty__Input");
-        let subtotal = li.querySelector(".subtotal");
-
-        addBtn.addEventListener("click", () => {
-            let qty = parseInt(qtyInput.value);
-            if (!isNaN(qty) && qty > 0) {
-                let calcSubtotal = qty * product.price;
-                subtotal.textContent = `$${calcSubtotal}.00`;
-                thisOrder.push({'productId': product.id, 'name': product.name, 'quantity': qty, "price": product.price, "subtotal" : calcSubtotal} );
-                
-                // Recalculate the total and update the UI
-                let total = thisOrder.reduce((acc, order) => acc + order.subtotal, 0);
-                totalAmountElement.textContent = `$${total}.00`;
-
-                console.log(thisOrder);
-                console.log(total);
-            } else {
-                alert("Invalid quantity");
-            }
-        });       
-    }
-    let total = thisOrder.reduce((acc, order) => acc + order.subtotal, 0);
-                totalAmountElement.textContent = `$${total}.00`;
-
-                console.log(thisOrder);
-                console.log(total);
-    let totalSection = document.createElement("div");
-    totalSection.classList.add("total__Section");
-    totalSection.innerHTML = `
-                                <button id="confirmOrderBtn" class="confirmBtn">Confirm Order</button>    
-                                <h3>Total:</h3>
-                            `;
-    totalSection.appendChild(totalAmountElement);
-    mainContainer.appendChild(totalSection);    
-
-    confirmOrderBtn.addEventListener("click", () => {        
-        orders.push({
-            client: select.value,
-            products: thisOrder.map(order => ({ productId: order.productId, name: order.name, quantity: order.quantity, price: order.price })),             
-        });
-        
-        localStorage.setItem("orders", JSON.stringify(orders));
-        
-        thisOrder = [];
-        
-        totalAmountElement.textContent = "$0.00";
-        
-        console.log(orders);
-    });
-}
-
-
-//Función para mostrar el listado de clientes
-function showClients(){
-    console.log('Show clients');
-    console.log(buttons)
-    selectionContainer.classList.add('noDisplay');
     console.log(clientsList)
     for (const client of clientsList) {
         let li = document.createElement("li");
@@ -222,36 +200,40 @@ function showClients(){
             <button>Add Order</button>
         `;
         mainContainer.appendChild(li);
-    }   
-    mainContainer.appendChild(goBackBtn);
-    let goBack = document.getElementById('goBackBtn');
-    goBack.onclick = () => {        
-        console.log('Hiciste click en Go Back');
-        location.reload();      
-        }
+    }
+        })
+       
+        
 };
 
 //Función para mostrar el listado de productos
 function showProducts(){
-    console.log('Show products');    
-    selectionContainer.classList.add('noDisplay');
-    console.log(productsList)
-    for (const product of productsList) {
-        let li = document.createElement("li");
-        li.classList.add("product__List");
-        li.innerHTML = `
-            <strong>Name:</strong> ${product.name}<br>
-            <strong>Price:</strong> $${product.price}.00<br>            
-            <button>Edit</button>            
-        `;
-        mainContainer.appendChild(li);
-    }   
-    mainContainer.appendChild(goBackBtn);
-    let goBack = document.getElementById('goBackBtn');
-    goBack.onclick = () => {        
-        console.log('Hiciste click en Go Back');
-        location.reload();      
-        } 
+    fetch('../data/productsList.json')
+        .then(response => response.json())
+        .then(productsList => {
+            selectionContainer.classList.add('noDisplay');
+            selectionContainer.classList.add("noDisplay");
+            mainContainer.appendChild(goBackBtn);
+            let goBack = document.getElementById('goBackBtn');
+            goBack.onclick = () => {        
+                console.log('Hiciste click en Go Back');
+                location.reload();      
+                }
+    
+            for (const product of productsList) {
+                let li = document.createElement("li");
+                li.classList.add("product__List");
+                li.innerHTML = `
+                    <strong>Name:</strong> ${product.name}<br>
+                    <strong>Price:</strong> $${product.price}.00<br>            
+                    <button>Edit</button>            
+                `;
+                mainContainer.appendChild(li);
+            }   
+            mainContainer.appendChild(goBackBtn);
+        })
+    
+    
 }
 //Función para mostrar las ordenes
 function showOrders() {
@@ -275,6 +257,9 @@ function showOrders() {
         mainContainer.appendChild(ordersContainer);
 
         orders.forEach((order, index) => {
+            // Calcular el total de la orden
+            const total = order.products.reduce((acc, product) => acc + (product.quantity * product.price), 0);
+
             const orderElement = document.createElement("div");
             orderElement.classList.add("order");
 
@@ -282,19 +267,21 @@ function showOrders() {
                 <h3>Order ${index + 1}</h3>
                 <p><strong>Client:</strong> ${order.client}</p>
                 <ul>
-                    ${order.products.map(product => `<li>${product.name} - ${product.quantity}</li>`).join("")}
+                    ${order.products.map(product => `<li>${product.name} - ${product.quantity} - ($${product.quantity * product.price})</li>`).join("")}
                 </ul>
+                <p><strong>Total:</strong> $${total.toFixed(2)}</p>
             `;
             ordersContainer.appendChild(orderElement);
         });
     } else {
-        // If there are no orders in localStorage, display a message
-        const ordersContainer = document.createElement("div"); // Create ordersContainer here
-        ordersContainer.id = "ordersContainer"; // Set its id
-        mainContainer.appendChild(ordersContainer); // Append it to the main container
+        // Si no hay órdenes en el localStorage, mostrar un mensaje
+        const ordersContainer = document.createElement("div");
+        ordersContainer.id = "ordersContainer"; 
+        mainContainer.appendChild(ordersContainer);
         ordersContainer.innerHTML = "<p>No orders available.</p>";
     }
 }
+
 
 
 
